@@ -4,6 +4,7 @@ from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import Authorization
 from tastypie.resources import ModelResource
 from tastypie.serializers import Serializer
+from tastypie_oauth.authentication import OAuth20Authentication
 
 from lights.models import Lighting, LightingHistory
 
@@ -12,7 +13,7 @@ class UserResource(ModelResource):
     class Meta:
         queryset = User.objects.all()
         allowed_methods = ['get']
-        authentication = BasicAuthentication()
+        authentication = OAuth20Authentication()
         authorization = Authorization()
 
 
@@ -21,7 +22,7 @@ class LightingResource(ModelResource):
         queryset = Lighting.objects.all()
         resource_name = 'lightings'
         allowed_methods = ['get', 'post', 'put', 'delete']
-        authentication = BasicAuthentication()
+        authentication = OAuth20Authentication()
         authorization = Authorization()
         serializer = Serializer(formats=['json', 'jsonp'])
         always_return_data = True
@@ -35,7 +36,7 @@ class LightingHistoryResource(ModelResource):
         queryset = LightingHistory.objects.all()
         resource_name = 'lighting_histories'
         allowed_methods = ['get', 'post', 'put', 'delete']
-        authentication = BasicAuthentication()
+        authentication = OAuth20Authentication()
         authorization = Authorization()
         serializer = Serializer(formats=['json', 'jsonp'])
         always_return_data = True
@@ -43,4 +44,6 @@ class LightingHistoryResource(ModelResource):
 
     def hydrate(self, bundle, request=None):
         bundle.obj.user = bundle.request.user
+
+
         return bundle

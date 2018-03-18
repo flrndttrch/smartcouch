@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'tastypie'
+    'tastypie',
+    'oauth2_provider',
+    'tastypie_oauth'
 ]
 
 MIDDLEWARE = [
@@ -120,3 +122,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+OAUTH_ACCESS_TOKEN_MODEL = 'oauth2_provider.models.AccessToken'
