@@ -11,7 +11,7 @@ from django.utils.timezone import now
 class Lighting(models.Model):
     # history = models.ForeignKey(LightingHistory, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
-    brightness = models.FloatField(default=1, validators=[MaxValueValidator(1.0), MinValueValidator(0.0)])
+    brightness = models.FloatField(default=1.0, validators=[MaxValueValidator(1.0), MinValueValidator(0.0)])
     color_name = models.CharField(max_length=64, blank=True, null=True, unique=True)
     color_r = models.IntegerField(default=None, blank=True, null=True, validators=[MaxValueValidator(255), MinValueValidator(0)])
     color_g = models.IntegerField(default=None, blank=True, null=True, validators=[MaxValueValidator(255), MinValueValidator(0)])

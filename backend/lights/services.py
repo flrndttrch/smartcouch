@@ -10,11 +10,11 @@ import Adafruit_GPIO.SPI as SPI
 
 # Configure the count of pixels:
 import math
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from webcolors import name_to_rgb
+from webcolors import name_to_rgb, rgb_to_name, CSS3_NAMES_TO_HEX
 
-from lights.models import LightingHistory
+from lights.models import LightingHistory, Lighting
 
 PIXEL_COUNT = 161
 
@@ -27,6 +27,25 @@ blink = False
 global color
 color = (255, 255, 255)
 
+@receiver(pre_save, sender=Lighting)
+def enrich_lighting(sender, instance, **kwargs):
+    if instance.color_r and instance.color_g and instance.color_b:
+        r = instance.color_r
+        g = instance.color_g
+        b = instance.color_b
+        try:
+            color_name = rgb_to_name(r, g, b)
+            instance.color_name = color_name
+        except ValueError:
+            color_name = None
+    elif instance.color_name:
+        color_name = instance.color_name.lower()
+        instance.color_name = color_name
+        if color_name in CSS3_NAMES_TO_HEX.keys():
+            r, g, b = name_to_rgb(color_name)
+            instance.color_r = r
+            instance.color_g = g
+            instance.color_b = b
 
 @receiver(post_save, sender=LightingHistory)
 def lighting_history_added(sender, instance, **kwargs):

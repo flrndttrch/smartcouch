@@ -4,7 +4,6 @@ from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import Authorization
 from tastypie.resources import ModelResource
 from tastypie.serializers import Serializer
-from tastypie_oauth.authentication import OAuth20Authentication
 
 from lights.models import Lighting, LightingHistory
 
@@ -14,7 +13,7 @@ class UserResource(ModelResource):
         queryset = User.objects.all()
         allowed_methods = ['get']
         #authentication = OAuth20Authentication()
-        authentication = BasicAuthentication
+        authentication = BasicAuthentication()
         authorization = Authorization()
 
 
@@ -24,7 +23,7 @@ class LightingResource(ModelResource):
         resource_name = 'lightings'
         allowed_methods = ['get', 'post', 'put', 'delete']
         #authentication = OAuth20Authentication()
-        authentication = BasicAuthentication
+        authentication = BasicAuthentication()
         authorization = Authorization()
         serializer = Serializer(formats=['json', 'jsonp'])
         always_return_data = True
@@ -39,7 +38,7 @@ class LightingHistoryResource(ModelResource):
         resource_name = 'lighting_histories'
         allowed_methods = ['get', 'post', 'put', 'delete']
         #authentication = OAuth20Authentication()
-        authentication = BasicAuthentication
+        authentication = BasicAuthentication()
         authorization = Authorization()
         serializer = Serializer(formats=['json', 'jsonp'])
         always_return_data = True
