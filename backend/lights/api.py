@@ -42,8 +42,7 @@ class LightingHistoryResource(ModelResource):
         always_return_data = True
         ordering = ['activation_date']
 
-    def hydrate(self, bundle, request=None):
+    def hydrate_user(self, bundle, request=None):
+        #TODO: Check if it works, otherwise change back to hydrate()
         bundle.obj.user = bundle.request.user
-
-
-        return bundle
+        return bundle.obj.user
