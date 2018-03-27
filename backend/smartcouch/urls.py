@@ -19,5 +19,5 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('lights.urls')),
-    url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    #url(r'^o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 ]

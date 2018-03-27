@@ -13,7 +13,8 @@ class UserResource(ModelResource):
     class Meta:
         queryset = User.objects.all()
         allowed_methods = ['get']
-        authentication = OAuth20Authentication()
+        #authentication = OAuth20Authentication()
+        authentication = BasicAuthentication
         authorization = Authorization()
 
 
@@ -22,7 +23,8 @@ class LightingResource(ModelResource):
         queryset = Lighting.objects.all()
         resource_name = 'lightings'
         allowed_methods = ['get', 'post', 'put', 'delete']
-        authentication = OAuth20Authentication()
+        #authentication = OAuth20Authentication()
+        authentication = BasicAuthentication
         authorization = Authorization()
         serializer = Serializer(formats=['json', 'jsonp'])
         always_return_data = True
@@ -36,7 +38,8 @@ class LightingHistoryResource(ModelResource):
         queryset = LightingHistory.objects.all()
         resource_name = 'lighting_histories'
         allowed_methods = ['get', 'post', 'put', 'delete']
-        authentication = OAuth20Authentication()
+        #authentication = OAuth20Authentication()
+        authentication = BasicAuthentication
         authorization = Authorization()
         serializer = Serializer(formats=['json', 'jsonp'])
         always_return_data = True
