@@ -12,7 +12,7 @@ import Adafruit_GPIO.SPI as SPI
 import math
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from webcolors import name_to_rgb, rgb_to_name, CSS3_NAMES_TO_HEX
+from webcolors import name_to_rgb, CSS3_NAMES_TO_HEX, rgb_to_name
 
 from lights.models import LightingHistory, Lighting
 
@@ -61,9 +61,9 @@ def lighting_history_added(sender, instance, **kwargs):
             return
 
         if lighting.name.lower() == 'color':
-            glow_color(pixels, color=color)
+            glow_color(pixels)
         elif lighting.name.lower() == 'blink':
-            blink_color(pixels, blink_times=1, color=color)
+            blink_color(pixels, blink_times=1)
     elif lighting.name.lower() == 'rainbow':
         rainbow_cycle_successive(pixels, wait_time=0.1)
         rainbow_cycle(pixels)
@@ -152,14 +152,14 @@ def brightness_decrease(pixels, wait_time=0.01, step=1):
             time.sleep(wait_time)
 
 
-def glow_color(pixels, color=(255, 0, 0)):
+def glow_color(pixels):
     pixels.clear()
     move_in(pixels, color)
     # pixels.set_pixels_rgb(color[0], color[1], color[2])
     # pixels.show()
 
 
-def blink_color(pixels, wait_time=0.5, color=(255, 0, 0)):
+def blink_color(pixels, wait_time=0.5):
     pixels.clear()
     move_in()
     while blink:
@@ -173,7 +173,7 @@ def blink_color(pixels, wait_time=0.5, color=(255, 0, 0)):
         time.sleep(0.08)
 
 
-def move_in(pixels, color=(255, 0, 0), wait_time=0.01):
+def move_in(pixels, wait_time=0.01):
     for i in range(pixels.count()):
         for j in reversed(range(i, pixels.count())):
             pixels.clear()
@@ -187,12 +187,13 @@ def move_in(pixels, color=(255, 0, 0), wait_time=0.01):
 
 
 def move_out(wait_time=0.01):
-    # TODO: Check if it works!
     for i in reversed(range(pixels.count())):
-        for j in range(i, pixels.count()):
+        for j in reversed(range(i, pixels.count())):
             pixels.clear()
-            for k in range(i):
-                pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(*color))
+            # first set all pixels at the begin
+            for k in reversed(range(i)):
+                pixels.set_pixel(k, Adafruit_WS2801.RGB_to_color(*color))
+            # set then the pixel at position j
             pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(*color))
             pixels.show()
             time.sleep(wait_time)
