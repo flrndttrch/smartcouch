@@ -49,26 +49,26 @@ def enrich_lighting(sender, instance, **kwargs):
 
 @receiver(post_save, sender=LightingHistory)
 def lighting_history_added(sender, instance, **kwargs):
-    lighting = instance.lighting
+    type = instance.type
 
     # Clear all the pixels to turn them off.
     pixels.clear()
     pixels.show()  # Make sure to call show() after changing any pixels!
-    if lighting.name.lower() in ['color', 'blink']:
+    if type.name.lower() in ['color', 'blink']:
         move_out()
-        color = init_color(lighting)
+        color = init_color(instance)
         if color is None:
             return
 
-        if lighting.name.lower() == 'color':
+        if type.name.lower() == 'color':
             glow_color(pixels)
-        elif lighting.name.lower() == 'blink':
+        elif type.name.lower() == 'blink':
             blink_color(pixels, blink_times=1)
-    elif lighting.name.lower() == 'rainbow':
+    elif type.name.lower() == 'rainbow':
         rainbow_cycle_successive(pixels, wait_time=0.1)
         rainbow_cycle(pixels)
         rainbow_colors(pixels)
-    elif lighting.name.lower() == 'off':
+    elif type.name.lower() == 'off':
         move_out()
         pixels.clear()
         pixels.show()
