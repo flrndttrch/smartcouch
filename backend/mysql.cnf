@@ -1,0 +1,5 @@
+[client]
+database = smartcouch
+user = florian
+password = Raspberry-PW1!
+default-character-set = utf8
