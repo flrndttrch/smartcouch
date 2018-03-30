@@ -15,11 +15,11 @@ class Lighting(models.Model):
     type = models.ForeignKey(Type)
     brightness = models.FloatField(default=1.0, validators=[MaxValueValidator(1.0), MinValueValidator(0.0)])
     color_name = models.CharField(max_length=64, blank=True, null=True, unique=True)
-    color_r = models.IntegerField(default=None, blank=True, null=True, validators=[MaxValueValidator(255), MinValueValidator(0)])
-    color_g = models.IntegerField(default=None, blank=True, null=True, validators=[MaxValueValidator(255), MinValueValidator(0)])
-    color_b = models.IntegerField(default=None, blank=True, null=True, validators=[MaxValueValidator(255), MinValueValidator(0)])
+    color_r = models.IntegerField(blank=True, null=True, validators=[MaxValueValidator(255), MinValueValidator(0)])
+    color_g = models.IntegerField(blank=True, null=True, validators=[MaxValueValidator(255), MinValueValidator(0)])
+    color_b = models.IntegerField(blank=True, null=True, validators=[MaxValueValidator(255), MinValueValidator(0)])
     creation_date = models.DateTimeField('date created', default=now)
-    description = models.CharField(max_length=1024)
+    description = models.CharField(max_length=1024, blank=True, null=True)
     active = models.BooleanField(default=True)
 
 class LightingHistory(models.Model):
