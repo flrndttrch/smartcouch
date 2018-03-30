@@ -2,19 +2,16 @@
 import time
 from colorsys import hsv_to_rgb, rgb_to_hsv
 
-import RPi.GPIO as GPIO
-
+import Adafruit_GPIO.SPI as SPI
 # Import the WS2801 module.
 import Adafruit_WS2801
-import Adafruit_GPIO.SPI as SPI
-
+import RPi.GPIO as GPIO
 # Configure the count of pixels:
-import math
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from webcolors import name_to_rgb, CSS3_NAMES_TO_HEX, rgb_to_name
 
-from lights.models import LightingHistory, Lighting
+from lights.models import Lighting
 
 PIXEL_COUNT = 161
 
@@ -29,7 +26,15 @@ color = (255, 255, 255)
 
 @receiver(pre_save, sender=Lighting)
 def enrich_lighting(sender, instance, **kwargs):
-    if instance.color_r and instance.color_g and instance.color_b:
+    Lighting.objects.filter(active=True).update(active=False)
+    instance.active = True
+
+    if instance.color_r is None and instance.color_g is None and instance.color_b is None and instance.color_name is None:
+        instance.color_name = 'white'
+        instance.color_r = 255
+        instance.color_g = 255
+        instance.color_b = 255
+    elif instance.color_r and instance.color_g and instance.color_b:
         r = instance.color_r
         g = instance.color_g
         b = instance.color_b
@@ -47,28 +52,26 @@ def enrich_lighting(sender, instance, **kwargs):
             instance.color_g = g
             instance.color_b = b
 
-@receiver(post_save, sender=LightingHistory)
+@receiver(post_save, sender=Lighting)
 def lighting_history_added(sender, instance, **kwargs):
-    lighting = instance.lighting
-
     # Clear all the pixels to turn them off.
     pixels.clear()
     pixels.show()  # Make sure to call show() after changing any pixels!
-    if lighting.name.lower() in ['color', 'blink']:
+    if instance.name.lower() in ['color', 'blink']:
         move_out()
-        color = init_color(lighting)
+        color = init_color(instance)
         if color is None:
             return
 
-        if lighting.name.lower() == 'color':
+        if instance.name.lower() == 'color':
             glow_color(pixels)
-        elif lighting.name.lower() == 'blink':
+        elif instance.name.lower() == 'blink':
             blink_color(pixels, blink_times=1)
-    elif lighting.name.lower() == 'rainbow':
+    elif instance.name.lower() == 'rainbow':
         rainbow_cycle_successive(pixels, wait_time=0.1)
         rainbow_cycle(pixels)
         rainbow_colors(pixels)
-    elif lighting.name.lower() == 'off':
+    elif instance.name.lower() == 'off':
         move_out()
         pixels.clear()
         pixels.show()

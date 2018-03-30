@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 from django.contrib import admin
 
 # Register your models here.
-from lights.models import Lighting, LightingHistory
+from lights.models import Lighting
 
-admin.site.register(LightingHistory)
 admin.site.register(Lighting)
