@@ -1,0 +1,1 @@
+[{"model": "lights.type", "pk": 1, "fields": {"name": "Off"}}, {"model": "lights.type", "pk": 2, "fields": {"name": "Rainbow"}}, {"model": "lights.type", "pk": 3, "fields": {"name": "Color"}}, {"model": "lights.type", "pk": 4, "fields": {"name": "Blink"}}]
