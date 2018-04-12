@@ -1,3 +1,6 @@
+#Jetbrains
+.idea/
+
 db.sqlite3
 **/lights/migrations/
 **/log/
