@@ -54,30 +54,33 @@ def enrich_lighting(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Lighting)
 def lighting_history_added(sender, instance, **kwargs):
+    lighting = instance.lighting
+    type = lighting.type
+
     # Clear all the pixels to turn them off.
     pixels.clear()
     pixels.show()  # Make sure to call show() after changing any pixels!
-    if instance.name.lower() in ['color', 'blink']:
+    if type.name.lower() in ['color', 'blink']:
         move_out()
-        color = init_color(instance)
+        color = init_color(lighting)
         if color is None:
             return
 
-        if instance.name.lower() == 'color':
+        if type.name.lower() == 'color':
             glow_color(pixels)
-        elif instance.name.lower() == 'blink':
+        elif type.name.lower() == 'blink':
             blink_color(pixels, blink_times=1)
-    elif instance.name.lower() == 'rainbow':
+    elif type.name.lower() == 'rainbow':
         rainbow_cycle_successive(pixels, wait_time=0.1)
         rainbow_cycle(pixels)
         rainbow_colors(pixels)
-    elif instance.name.lower() == 'off':
+    elif type.name.lower() == 'off':
         move_out()
         pixels.clear()
         pixels.show()
 
 def init_color(lighting):
-    color = None
+    global color
     if lighting.color_name is not None:
         color = name_to_rgb(lighting.color_name)
         if lighting.brightness is not None:
@@ -90,14 +93,16 @@ def init_color(lighting):
             color = set_brightness(brightness, *color)
     return color
 
-def set_brightness(brightness, color=(1, 1, 1)):
+def set_brightness(brightness):
+    global color
+    if color is None:
+        return
+
     h, s, v = rgb_to_hsv(color[0] / 255.0, color[1] / 255.0, color[2] / 255.0)
     s = brightness
     r, g, b = hsv_to_rgb(h, s, v)
 
     color = (int(r * 255), int(g * 255), int(b * 255))
-    return color
-
 
 # Define the wheel function to interpolate between different hues.
 def wheel(pos):
@@ -124,7 +129,7 @@ def rainbow_cycle_successive(pixels, wait_time=0.1):
             time.sleep(wait_time)
 
 
-def rainbow_cycle(pixels, wait_time=0.005):
+def rainbow_cycle(pixels, wait_time=0.1):
     for j in range(256):  # one cycle of all 256 colors in the wheel
         for i in range(pixels.count()):
             pixels.set_pixel(i, wheel(((i * 256 // pixels.count()) + j) % 256))
@@ -133,7 +138,7 @@ def rainbow_cycle(pixels, wait_time=0.005):
             time.sleep(wait_time)
 
 
-def rainbow_colors(pixels, wait_time=0.05):
+def rainbow_colors(pixels, wait_time=0.1):
     for j in range(256):  # one cycle of all 256 colors in the wheel
         for i in range(pixels.count()):
             pixels.set_pixel(i, wheel(((256 // pixels.count() + j)) % 256))
@@ -142,7 +147,7 @@ def rainbow_colors(pixels, wait_time=0.05):
             time.sleep(wait_time)
 
 
-def brightness_decrease(pixels, wait_time=0.01, step=1):
+def brightness_decrease(pixels, wait_time=0.1, step=1):
     for j in range(int(256 // step)):
         for i in range(pixels.count()):
             r, g, b = pixels.get_pixel_rgb(i)
@@ -166,17 +171,15 @@ def blink_color(pixels, wait_time=0.5):
     pixels.clear()
     move_in()
     while blink:
-        time.sleep(0.08)
+        time.sleep(wait_time)
         pixels.clear()
         pixels.show()
+        time.sleep(wait_time)
 
-        for k in range(pixels.count()):
-            pixels.set_pixel(k, Adafruit_WS2801.RGB_to_color(*color))
+        pixels.set_pixels(Adafruit_WS2801.RGB_to_color(*color))
         pixels.show()
-        time.sleep(0.08)
 
-
-def move_in(pixels, wait_time=0.01):
+def move_in(pixels, wait_time=0.1):
     for i in range(pixels.count()):
         for j in reversed(range(i, pixels.count())):
             pixels.clear()
@@ -189,12 +192,12 @@ def move_in(pixels, wait_time=0.01):
             time.sleep(wait_time)
 
 
-def move_out(wait_time=0.01):
-    for i in reversed(range(pixels.count())):
-        for j in reversed(range(i, pixels.count())):
+def move_out(wait_time=0.1):
+    for i in range(pixels.count()):
+        for j in reversed(xrange(i)):
             pixels.clear()
-            # first set all pixels at the begin
-            for k in reversed(range(i)):
+            # first set all pixels at the end
+            for k in range(i, pixels.count()):
                 pixels.set_pixel(k, Adafruit_WS2801.RGB_to_color(*color))
             # set then the pixel at position j
             pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(*color))

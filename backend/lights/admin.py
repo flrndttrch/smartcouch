@@ -7,3 +7,4 @@ from django.contrib import admin
 from lights.models import Lighting
 
 admin.site.register(Lighting)
+admin.site.register(Type)
