@@ -16,7 +16,7 @@ from webcolors import name_to_rgb, CSS3_NAMES_TO_HEX, rgb_to_name
 
 from lights.models import LightingHistory, Lighting
 
-PIXEL_COUNT = 161
+PIXEL_COUNT = 52
 
 # Alternatively specify a hardware SPI connection on /dev/spidev0.0:
 SPI_PORT = 0
@@ -25,6 +25,7 @@ pixels = Adafruit_WS2801.WS2801Pixels(PIXEL_COUNT, spi=SPI.SpiDev(SPI_PORT, SPI_
 blink = False
 
 color = (255, 255, 255)
+brightness = 1.0
 
 @receiver(pre_save, sender=Lighting)
 def enrich_lighting(sender, instance, **kwargs):
@@ -74,11 +75,12 @@ def lighting_history_added(sender, instance, **kwargs):
 
 def init_color(lighting):
     global color
+    global brightness
     if lighting.color_name is not None:
         color = name_to_rgb(lighting.color_name)
         if lighting.brightness is not None:
             brightness = lighting.brightness
-            color = set_brightness(brightness, *color)
+            color = set_brightness()
     elif lighting.color_r is not None and lighting.color_g is not None and lighting.color_b is not None:
         color = (lighting.color_r, lighting.color_g, lighting.color_b)
         if lighting.brightness is not None:
@@ -86,8 +88,9 @@ def init_color(lighting):
             color = set_brightness(brightness, *color)
     return color
 
-def set_brightness(brightness):
+def set_brightness():
     global color
+    global brightness
     if color is None:
         return
 
@@ -160,7 +163,7 @@ def glow_color(pixels):
     # pixels.show()
 
 
-def blink_color(pixels, wait_time=0.5):
+def blink_color(pixels, wait_time=0.25):
     pixels.clear()
     move_in()
     while blink:
@@ -172,7 +175,7 @@ def blink_color(pixels, wait_time=0.5):
         pixels.set_pixels(Adafruit_WS2801.RGB_to_color(*color))
         pixels.show()
 
-def move_in(pixels, wait_time=0.1):
+def move_in(pixels, wait_time=0.05):
     for i in range(pixels.count()):
         for j in reversed(range(i, pixels.count())):
             pixels.clear()
@@ -185,7 +188,7 @@ def move_in(pixels, wait_time=0.1):
             time.sleep(wait_time)
 
 
-def move_out(wait_time=0.1):
+def move_out(wait_time=0.05):
     for i in range(pixels.count()):
         for j in reversed(xrange(i)):
             pixels.clear()
