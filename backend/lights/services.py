@@ -53,8 +53,7 @@ def enrich_lighting(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Lighting)
 def lighting_added(sender, instance, **kwargs):
-    lighting = instance.lighting
-    lighting_type = lighting.type
+    lighting_type = instance.type
 
     # Clear all the pixels to turn them off.
     pixels.clear()
@@ -63,7 +62,7 @@ def lighting_added(sender, instance, **kwargs):
     if lighting_type.name.lower() in ['color', 'blink']:
         global color
         move_out()
-        color = init_color(lighting)
+        color = init_color(instance)
         if color is None:
             return
 
