@@ -5,7 +5,7 @@ from tastypie.authorization import Authorization
 from tastypie.resources import ModelResource
 from tastypie.serializers import Serializer
 
-from lights.models import Lighting, LightingHistory, Type
+from lights.models import Lighting, Type
 
 
 class UserResource(ModelResource):

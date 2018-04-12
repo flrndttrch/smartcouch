@@ -20,10 +20,9 @@ SPI_PORT = 0
 SPI_DEVICE = 0
 pixels = Adafruit_WS2801.WS2801Pixels(PIXEL_COUNT, spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE), gpio=GPIO)
 blink = False
-
-global color
 color = (255, 255, 255)
 brightness = 1.0
+
 
 @receiver(pre_save, sender=Lighting)
 def enrich_lighting(sender, instance, **kwargs):
@@ -36,11 +35,9 @@ def enrich_lighting(sender, instance, **kwargs):
         instance.color_g = 255
         instance.color_b = 255
     elif instance.color_r and instance.color_g and instance.color_b:
-        r = instance.color_r
-        g = instance.color_g
-        b = instance.color_b
+        rgb = (instance.color_r, instance.color_g, instance.color_b)
         try:
-            color_name = rgb_to_name(r, g, b)
+            color_name = rgb_to_name(rgb)
             instance.color_name = color_name
         except ValueError:
             color_name = None
@@ -53,32 +50,40 @@ def enrich_lighting(sender, instance, **kwargs):
             instance.color_g = g
             instance.color_b = b
 
+
 @receiver(post_save, sender=Lighting)
-def lighting_history_added(sender, instance, **kwargs):
+def lighting_added(sender, instance, **kwargs):
     lighting = instance.lighting
-    type = lighting.type
+    lighting_type = lighting.type
 
     # Clear all the pixels to turn them off.
     pixels.clear()
     pixels.show()  # Make sure to call show() after changing any pixels!
-    if type.name.lower() in ['color', 'blink']:
+    global blink
+    if lighting_type.name.lower() in ['color', 'blink']:
+        global color
         move_out()
         color = init_color(lighting)
         if color is None:
             return
 
-        if type.name.lower() == 'color':
-            glow_color(pixels)
-        elif type.name.lower() == 'blink':
-            blink_color(pixels, blink_times=1)
-    elif type.name.lower() == 'rainbow':
-        rainbow_cycle_successive(pixels, wait_time=0.1)
-        rainbow_cycle(pixels)
-        rainbow_colors(pixels)
-    elif type.name.lower() == 'off':
-        move_out()
-        pixels.clear()
-        pixels.show()
+        if lighting_type.name.lower() == 'color':
+            blink = False
+            glow_color()
+        elif lighting_type.name.lower() == 'blink':
+            blink = True
+            blink_color()
+    else:
+        blink = False
+        if lighting_type.name.lower() == 'rainbow':
+            rainbow_cycle_successive(wait_time=0.1)
+            rainbow_cycle()
+            rainbow_colors()
+        elif lighting_type.name.lower() == 'off':
+            move_out()
+            pixels.clear()
+            pixels.show()
+
 
 def init_color(lighting):
     global color
@@ -87,13 +92,14 @@ def init_color(lighting):
         color = name_to_rgb(lighting.color_name)
         if lighting.brightness is not None:
             brightness = lighting.brightness
-            color = set_brightness()
+            set_brightness()
     elif lighting.color_r is not None and lighting.color_g is not None and lighting.color_b is not None:
         color = (lighting.color_r, lighting.color_g, lighting.color_b)
         if lighting.brightness is not None:
             brightness = lighting.brightness
-            color = set_brightness(brightness, *color)
+            set_brightness()
     return color
+
 
 def set_brightness():
     global color
@@ -106,6 +112,7 @@ def set_brightness():
     r, g, b = hsv_to_rgb(h, s, v)
 
     color = (int(r * 255), int(g * 255), int(b * 255))
+
 
 # Define the wheel function to interpolate between different hues.
 def wheel(pos):
@@ -120,19 +127,19 @@ def wheel(pos):
 
 
 # Define rainbow cycle function to do a cycle of all hues.
-def rainbow_cycle_successive(pixels, wait_time=0.1):
+def rainbow_cycle_successive(wait_time=0.1):
     for i in range(pixels.count()):
         # tricky math! we use each pixel as a fraction of the full 96-color wheel
         # (thats the i / strip.numPixels() part)
         # Then add in j which makes the colors go around per pixel
         # the % 96 is to make the wheel cycle around
-        pixels.set_pixel(i, wheel(((i * 256 // pixels.count())) % 256))
+        pixels.set_pixel(i, wheel((i * 256 // pixels.count()) % 256))
         pixels.show()
         if wait_time > 0:
             time.sleep(wait_time)
 
 
-def rainbow_cycle(pixels, wait_time=0.1):
+def rainbow_cycle(wait_time=0.1):
     for j in range(256):  # one cycle of all 256 colors in the wheel
         for i in range(pixels.count()):
             pixels.set_pixel(i, wheel(((i * 256 // pixels.count()) + j) % 256))
@@ -141,16 +148,16 @@ def rainbow_cycle(pixels, wait_time=0.1):
             time.sleep(wait_time)
 
 
-def rainbow_colors(pixels, wait_time=0.1):
+def rainbow_colors(wait_time=0.1):
     for j in range(256):  # one cycle of all 256 colors in the wheel
         for i in range(pixels.count()):
-            pixels.set_pixel(i, wheel(((256 // pixels.count() + j)) % 256))
+            pixels.set_pixel(i, wheel((256 // pixels.count() + j) % 256))
         pixels.show()
         if wait_time > 0:
             time.sleep(wait_time)
 
 
-def brightness_decrease(pixels, wait_time=0.1, step=1):
+def brightness_decrease(wait_time=0.1, step=1):
     for j in range(int(256 // step)):
         for i in range(pixels.count()):
             r, g, b = pixels.get_pixel_rgb(i)
@@ -163,14 +170,14 @@ def brightness_decrease(pixels, wait_time=0.1, step=1):
             time.sleep(wait_time)
 
 
-def glow_color(pixels):
+def glow_color():
     pixels.clear()
-    move_in(pixels, color)
+    move_in()
     # pixels.set_pixels_rgb(color[0], color[1], color[2])
     # pixels.show()
 
 
-def blink_color(pixels, wait_time=0.25):
+def blink_color(wait_time=0.25):
     pixels.clear()
     move_in()
     while blink:
@@ -182,7 +189,8 @@ def blink_color(pixels, wait_time=0.25):
         pixels.set_pixels(Adafruit_WS2801.RGB_to_color(*color))
         pixels.show()
 
-def move_in(pixels, wait_time=0.05):
+
+def move_in(wait_time=0.05):
     for i in range(pixels.count()):
         for j in reversed(range(i, pixels.count())):
             pixels.clear()
