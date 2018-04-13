@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from tastypie import fields
 from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import Authorization
+from tastypie.constants import ALL
 from tastypie.resources import ModelResource
 from tastypie.serializers import Serializer
 
@@ -27,6 +28,7 @@ class TypeResource(ModelResource):
         authorization = Authorization()
         serializer = Serializer(formats=['json', 'jsonp'])
         always_return_data = True
+        filtering = {"name": ALL}
 
 class LightingResource(ModelResource):
     type = fields.ToOneField(TypeResource, 'type', full=True)
