@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Smartcouch</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_account">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_account">This account is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="confirm">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="submit">Submit</string>
+    <string name="error_types">Couldn\'t get Types.</string>
+    <string name="error_users">Couldn\'t authenticate user.</string>
+    <string name="error_type">No Type has been set.</string>
+    <string name="success_lighting">Lighting was changed.</string>
+    <string name="brightness">Brightness: \u0020</string>
+    <string name="color">Color:\u0020</string>
+    <string name="type">Type:\u0020</string>
+</resources>

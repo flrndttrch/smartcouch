@@ -5,6 +5,8 @@ db.sqlite3
 **/lights/migrations/
 **/log/
 
+build/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
