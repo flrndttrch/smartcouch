@@ -18,6 +18,7 @@ class UserResource(ModelResource):
         #authentication = OAuth20Authentication()
         authentication = BasicAuthentication()
         authorization = Authorization()
+        filtering = {"username": ALL}
 
 class TypeResource(ModelResource):
     class Meta:
@@ -33,7 +34,7 @@ class TypeResource(ModelResource):
 
 class LightingResource(ModelResource):
     type = fields.ToOneField(TypeResource, 'type', full=True)
-    user = fields.ToOneField(UserResource, 'user')
+    user = fields.ToOneField(UserResource, 'user', full=True)
 
     class Meta:
         queryset = Lighting.objects.all()
