@@ -9,12 +9,13 @@ The following hardware is needed to build the couch:
 
 ## The couch
 The couch I built was inspired by this:
+
 ![Alt text](http://www.dekomilch.de/wp-content/uploads/2017/08/paletten-couch-bauen.jpg "Source: http://www.dekomilch.de/diy-do-it-yourself/palettensofa-bauen-visuelle-anleitung/")
 
 I additionaly used indoor gaze to get the color I wanted. After setting it up, I used tape underneeth the seating to have a better surface for the LED stripe.
 
 ## Wiring
-For the wiring of the LED stripes with the Raspberry Pi and the power supply I used [this](https://tutorials-raspberrypi.de/raspberry-pi-ws2801-rgb-led-streifen-anschliessen-steuern/) tutorial. It's in german, but in one can focus on the image below.
+For the wiring of the LED stripes with the Raspberry Pi and the power supply I used [this](https://tutorials-raspberrypi.de/raspberry-pi-ws2801-rgb-led-streifen-anschliessen-steuern/) tutorial. It's in german, but in case you do not speak german, you can focus on the image of the wiring.
 
 As the LED stripes are supposed to be placed over the edges of the pallets, I cut them and soldered connectors to plug them together.
 
