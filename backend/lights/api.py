@@ -14,6 +14,7 @@ class UserResource(ModelResource):
         resource_name = 'users'
         queryset = User.objects.all()
         allowed_methods = ['get']
+        excludes = ['email', 'password', 'is_superuser']
         #authentication = OAuth20Authentication()
         authentication = BasicAuthentication()
         authorization = Authorization()
