@@ -6,7 +6,7 @@ from tastypie.constants import ALL
 from tastypie.resources import ModelResource
 from tastypie.serializers import Serializer
 
-from lights.models import Lighting, Type
+from lights.models import Lighting, Type, Timer, Day
 
 
 class UserResource(ModelResource):
@@ -49,3 +49,27 @@ class LightingResource(ModelResource):
     def hydrate(self, bundle, request=None):
         bundle.obj.user = bundle.request.user
         return bundle
+
+class TimerResource(ModelResource):
+    lighting = fields.ToOneField(LightingResource, 'lighting', full=True)
+    days = fields.ManyToManyField('lights.api.DayResource', 'days', full=True)
+
+    class Meta:
+        queryset = Timer.objects.all()
+        resource_name = 'timers'
+        allowed_methods = ['get', 'post', 'put', 'delete']
+        authentication = BasicAuthentication()
+        authorization = Authorization()
+        serializer = Serializer(formats=['json', 'jsonp'])
+        always_return_data = True
+
+
+class DayResource(ModelResource):
+    class Meta:
+        queryset = Day.objects.all()
+        resource_name = 'days'
+        allowed_methods = ['get', 'post', 'put', 'delete']
+        authentication = BasicAuthentication()
+        authorization = Authorization()
+        serializer = Serializer(formats=['json', 'jsonp'])
+        always_return_data = True
