@@ -8,11 +8,22 @@ from django.db import models
 from django.utils.timezone import now
 
 class Type(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True)
 
 class Lighting(models.Model):
     user = models.ForeignKey(User)
     # history = models.ForeignKey(LightingHistory, on_delete=models.CASCADE)
+    # TYPE_CHOICES = (
+    #     ('off', 'Off'),
+    #     ('color', 'Color'),
+    #     ('rainbow', 'Rainbow'),
+    #     ('blink', 'Blink'),
+    # )
+    # types = models.CharField(
+    #     max_length=10,
+    #     choices=TYPE_CHOICES,
+    #     default='color',
+    # )
     type = models.ForeignKey(Type)
     brightness = models.FloatField(default=1.0, validators=[MaxValueValidator(1.0), MinValueValidator(0.0)])
     color_name = models.CharField(max_length=64, blank=True, null=True, unique=True)
@@ -22,3 +33,14 @@ class Lighting(models.Model):
     creation_date = models.DateTimeField('date created', default=now)
     description = models.CharField(max_length=1024, blank=True, null=True)
     active = models.BooleanField(default=True)
+
+# class Day(models.Model):
+#     day = models.CharField(max_length=128, unique=True)
+#
+# class Timer(models.Model):
+#     lighting = models.ForeignKey(Lighting)
+#     days = models.ManyToManyField(Day)
+#     starting_time = models.TimeField('starting time')
+#     end_time = models.DateTimeField('end time')
+
+
