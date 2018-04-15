@@ -34,7 +34,10 @@ public interface DjangoService {
     Call<UserResponse> listUsers();
 
     @GET("users/")
-    Call<UserResponse> getUserByName(@Query("name") String name);
+    Call<UserResponse> getUserByUsername(@Query("username") String username);
+
+    @GET("users/{id}")
+    Call<UserResponse> getUserById(@Path("id") Integer id);
 
     @POST("lightings/")
     Call<Lighting> postLighting(@Body Lighting lighting);

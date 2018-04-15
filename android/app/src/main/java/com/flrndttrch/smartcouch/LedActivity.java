@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.flrndttrch.smartcouch.model.Lighting;
-import com.flrndttrch.smartcouch.model.LightingResponse;
 import com.flrndttrch.smartcouch.model.Type;
 import com.flrndttrch.smartcouch.model.TypeResponse;
 import com.flrndttrch.smartcouch.model.User;
@@ -105,7 +104,7 @@ public class LedActivity extends AppCompatActivity implements AdapterView.OnItem
                 Log.e(TAG, throwable.toString());
             }
         });
-        djangoService.getUserByName(settings.getString("username", "")).enqueue(new Callback<UserResponse>() {
+        djangoService.getUserByUsername(settings.getString("username", "")).enqueue(new Callback<UserResponse>() {
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                 List<User> results = response.body().getResults();
