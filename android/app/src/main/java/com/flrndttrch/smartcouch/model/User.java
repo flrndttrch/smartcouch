@@ -13,33 +13,37 @@ public class User {
     private String lastName;
     @SerializedName("username")
     private String username;
-    @SerializedName("password")
-    private String password;
+//    @SerializedName("password")
+//    private String password;
     @SerializedName("date_joined")
     private String dateJoined;
-    @SerializedName("email")
-    private String email;
+//    @SerializedName("email")
+//    private String email;
     @SerializedName("is_active")
     private boolean isActive;
     @SerializedName("is_staff")
     private boolean isStaff;
-    @SerializedName("is_superuser")
-    private boolean isSuperuser;
+//    @SerializedName("is_superuser")
+//    private boolean isSuperuser;
     @SerializedName("last_login")
     private String lastLogin;
 
-    public User(int id, String firstName, String lastName, String username, String password, String dateJoined,
-                String email, boolean isActive, boolean isStaff, boolean isSuperuser, String lastLogin) {
+    public User(int id, String firstName, String lastName, String username, String dateJoined,
+                boolean isActive, boolean isStaff, String lastLogin) {
+//    public User(int id, String firstName, String lastName, String username, String password,
+// String dateJoined,
+//                String email, boolean isActive, boolean isStaff, boolean isSuperuser, String
+// lastLogin) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
-        this.password = password;
+//        this.password = password;
         this.dateJoined = dateJoined;
-        this.email = email;
+//        this.email = email;
         this.isActive = isActive;
         this.isStaff = isStaff;
-        this.isSuperuser = isSuperuser;
+//        this.isSuperuser = isSuperuser;
         this.lastLogin = lastLogin;
     }
 
@@ -75,28 +79,12 @@ public class User {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getDateJoined() {
         return dateJoined;
     }
 
     public void setDateJoined(String dateJoined) {
         this.dateJoined = dateJoined;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public boolean isActive() {
@@ -113,14 +101,6 @@ public class User {
 
     public void setStaff(boolean staff) {
         isStaff = staff;
-    }
-
-    public boolean isSuperuser() {
-        return isSuperuser;
-    }
-
-    public void setSuperuser(boolean superuser) {
-        isSuperuser = superuser;
     }
 
     public String getLastLogin() {
