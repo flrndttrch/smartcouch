@@ -34,13 +34,14 @@ class Lighting(models.Model):
     description = models.CharField(max_length=1024, blank=True, null=True)
     active = models.BooleanField(default=True)
 
-# class Day(models.Model):
-#     day = models.CharField(max_length=128, unique=True)
-#
-# class Timer(models.Model):
-#     lighting = models.ForeignKey(Lighting)
-#     days = models.ManyToManyField(Day)
-#     starting_time = models.TimeField('starting time')
-#     end_time = models.DateTimeField('end time')
+class Day(models.Model):
+    day = models.CharField(max_length=3, unique=True)
+    day_name = models.CharField(max_length=10, unique=True)
+
+class Timer(models.Model):
+    lighting = models.ForeignKey(Lighting)
+    days = models.ManyToManyField(Day)
+    star_time = models.TimeField('start time')
+    end_time = models.DateTimeField('end time')
 
 

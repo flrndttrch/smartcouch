@@ -6,12 +6,14 @@ import Adafruit_GPIO.SPI as SPI
 # Import the WS2801 module.
 import Adafruit_WS2801
 import RPi.GPIO as GPIO
-# Configure the count of pixels:
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save, pre_save, pre_delete
 from django.dispatch import receiver
 from webcolors import name_to_rgb, CSS3_NAMES_TO_HEX, rgb_to_name
 
-from lights.models import Lighting
+from datetime import date
+from apscheduler.schedulers.background import BackgroundScheduler
+
+from lights.models import Lighting, Timer
 
 PIXEL_COUNT = 52
 
@@ -22,6 +24,10 @@ pixels = Adafruit_WS2801.WS2801Pixels(PIXEL_COUNT, spi=SPI.SpiDev(SPI_PORT, SPI_
 blink = False
 color = (255, 255, 255)
 brightness = 1.0
+
+# Start the scheduler
+sched = BackgroundScheduler()
+sched.start()
 
 
 @receiver(pre_save, sender=Lighting)
@@ -79,9 +85,13 @@ def lighting_added(sender, instance, **kwargs):
             rainbow_cycle()
             rainbow_colors()
         elif lighting_type.name.lower() == 'off':
-            move_out()
-            pixels.clear()
-            pixels.show()
+            off()
+
+
+def off():
+    move_out()
+    pixels.clear()
+    pixels.show()
 
 
 def init_color(lighting):
@@ -213,3 +223,33 @@ def move_out(wait_time=0.05):
             pixels.set_pixel(j, Adafruit_WS2801.RGB_to_color(*color))
             pixels.show()
             time.sleep(wait_time)
+
+
+def on_timer(lighting):
+    enrich_lighting(None, lighting)
+    Lighting.save(lighting)
+
+
+def off_timer():
+    off()
+    #TODO: save "off" lighting
+    #Lighting.save(off)
+
+
+@receiver(pre_save, sender=Timer)
+def add_timer(sender, instance, *args, **kwargs):
+    lighting = instance.lighting
+    id = (instance.id + "_on", instance.id + "_off")
+    start_date = instance.start_date
+    end_date = instance.end_date
+    days = instance.days
+    sched.add_job(on_timer, 'cron', hour=start_date.hour, minute=start_date.minute, second=start_date.second,
+                  day_of_week=days, args=[lighting], id=id[0])
+    sched.add_job(off_timer, 'cron', hour=end_date.hour, minute=end_date.minute, second=end_date.second,
+                  day_of_week=days, id=id[1])
+
+
+@receiver(pre_delete, sender=Timer)
+def add_timer(sender, instance, *args, **kwargs):
+    sched.remove_job(instance.id + "_on")
+    sched.remove_job(instance.id + "_off")

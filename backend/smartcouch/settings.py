@@ -135,4 +135,4 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 STATIC_URL = '/static/'
 
-OAUTH_ACCESS_TOKEN_MODEL = 'oauth2_provider.models.AccessToken'
+# OAUTH_ACCESS_TOKEN_MODEL = 'oauth2_provider.models.AccessToken'
