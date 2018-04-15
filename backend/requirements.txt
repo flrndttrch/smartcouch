@@ -1,2 +1,6 @@
-Django==1.11.10
+django_tastypie_oauth==0.0.3
+Django==1.11.11
+webcolors==1.8.1
+Adafruit_GPIO==1.0.3
+Adafruit_WS2801==1.0.1
 django_tastypie==0.14.0

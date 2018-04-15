@@ -25,7 +25,7 @@ SECRET_KEY = '%+ik&2hu)9sh$^_o#r!gej5o%ur-bbs0qv4w9d$7(z)5gs56!d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.178.72', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'tastypie'
+    'tastypie',
+    #'oauth2_provider',
+    #'tastypie_oauth'
 ]
 
 MIDDLEWARE = [
@@ -77,9 +79,20 @@ WSGI_APPLICATION = 'smartcouch.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'ENGINE': 'django.db.backends.mysql',
+	'NAME': 'smartcouch',
+        'USER': 'florian',
+        'PASSWORD': 'Raspberry-PW1!',
+        'HOST': 'localhost',
+        'PORT': '3306',  
+	'OPTIONS': {
+            'sql_mode': 'traditional',
+        },
+    },
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # }
 }
 
 
@@ -119,4 +132,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 STATIC_URL = '/static/'
+
+OAUTH_ACCESS_TOKEN_MODEL = 'oauth2_provider.models.AccessToken'

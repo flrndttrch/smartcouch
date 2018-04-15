@@ -1,5 +1,9 @@
+#Jetbrains
+.idea/
+
 db.sqlite3
-ledstripe/migrations/
+**/lights/migrations/
+**/log/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

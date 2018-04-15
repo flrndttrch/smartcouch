@@ -7,25 +7,40 @@ from django.db import models
 # Create your models here.
 from django.utils.timezone import now
 
+class Type(models.Model):
+    name = models.CharField(max_length=200, unique=True)
 
 class Lighting(models.Model):
+    user = models.ForeignKey(User)
     # history = models.ForeignKey(LightingHistory, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
-    brightness = models.FloatField(default=1, validators=[MaxValueValidator(1.0), MinValueValidator(0.0)])
-    color_name = models.CharField(max_length=64, blank=True, null=True)
+    # TYPE_CHOICES = (
+    #     ('off', 'Off'),
+    #     ('color', 'Color'),
+    #     ('rainbow', 'Rainbow'),
+    #     ('blink', 'Blink'),
+    # )
+    # types = models.CharField(
+    #     max_length=10,
+    #     choices=TYPE_CHOICES,
+    #     default='color',
+    # )
+    type = models.ForeignKey(Type)
+    brightness = models.FloatField(default=1.0, validators=[MaxValueValidator(1.0), MinValueValidator(0.0)])
+    color_name = models.CharField(max_length=64, blank=True, null=True, unique=True)
     color_r = models.IntegerField(default=None, blank=True, null=True, validators=[MaxValueValidator(255), MinValueValidator(0)])
     color_g = models.IntegerField(default=None, blank=True, null=True, validators=[MaxValueValidator(255), MinValueValidator(0)])
     color_b = models.IntegerField(default=None, blank=True, null=True, validators=[MaxValueValidator(255), MinValueValidator(0)])
     creation_date = models.DateTimeField('date created', default=now)
-    description = models.CharField(max_length=1024)
+    description = models.CharField(max_length=1024, blank=True, null=True)
     active = models.BooleanField(default=True)
 
-class LightingHistory(models.Model):
-    lighting = models.ForeignKey(Lighting, on_delete=models.CASCADE)
-    user = models.ForeignKey(User)
-    activation_date = models.DateTimeField('date activated', default=now)
+# class Day(models.Model):
+#     day = models.CharField(max_length=128, unique=True)
+#
+# class Timer(models.Model):
+#     lighting = models.ForeignKey(Lighting)
+#     days = models.ManyToManyField(Day)
+#     starting_time = models.TimeField('starting time')
+#     end_time = models.DateTimeField('end time')
 
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        super(LightingHistory, self).save(force_insert, force_update, using, update_fields)
 
-        Lighting.objects.all().exclude(pk=self.pk).update(active=False)
