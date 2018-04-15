@@ -20,4 +20,7 @@
     <string name="error_users">Couldn\'t authenticate user.</string>
     <string name="error_type">No Type has been set.</string>
     <string name="success_lighting">Lighting was changed.</string>
+    <string name="brightness">Brightness: \u0020</string>
+    <string name="color">Color:\u0020</string>
+    <string name="type">Type:\u0020</string>
 </resources>

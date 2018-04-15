@@ -40,23 +40,26 @@ public class LedActivity extends AppCompatActivity implements AdapterView.OnItem
         .OnSeekBarChangeListener, View.OnClickListener {
     private static final String TAG = LedActivity.class.getSimpleName();
     private TextView colorTextView;
+    private TextView brightnessTextView;
     private ImageView colorView;
-    private android.app.AlertDialog alertDialog;
     private Spinner typeSpinner;
     private SeekBar brightnessSeekbar;
     private Button submit;
-    private List<Type> types;
-    private SharedPreferences settings;
+
     private int[] color = {255, 255, 255};
-    private float brightness;
+    private float brightness = 1.0f;
+    private SharedPreferences settings;
+    private android.app.AlertDialog alertDialog;
     private DjangoService djangoService;
     private User user;
+    private List<Type> types;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_led);
-        colorTextView = findViewById(R.id.colorTextView);
+        brightnessTextView = findViewById(R.id.brightnessTextView);
+        brightnessTextView.setText(getString(R.string.brightness) + brightness * 100);
         colorView = findViewById(R.id.color);
         colorView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,7 +128,6 @@ public class LedActivity extends AppCompatActivity implements AdapterView.OnItem
         builder.setPositiveButton(getString(R.string.confirm), new ColorListener() {
             @Override
             public void onColorSelected(ColorEnvelope colorEnvelope) {
-                colorTextView.setText("#" + colorEnvelope.getColorHtml());
                 color = colorEnvelope.getColorRGB();
                 colorView.setBackgroundColor(colorEnvelope.getColor());
             }
@@ -144,10 +146,7 @@ public class LedActivity extends AppCompatActivity implements AdapterView.OnItem
          */
         ColorPickerView colorPickerView = builder.getColorPickerView();
 
-        colorTextView = findViewById(R.id.colorTextView);
-        colorTextView.setText("#" + colorPickerView.getSavedColorHtml(R.color.colorAccent));
         color = colorPickerView.getSavedColorRGB(R.color.colorAccent);
-
         colorView.setBackgroundColor(colorPickerView.getSavedColor(R.color.colorAccent));
     }
 
@@ -156,16 +155,17 @@ public class LedActivity extends AppCompatActivity implements AdapterView.OnItem
         String type = adapterView.getItemAtPosition(i).toString().toLowerCase();
         if (type.equals("off") || type.equals("rainbow")) {
             colorView.setVisibility(View.GONE);
-            colorTextView.setVisibility(View.GONE);
             if (type.equals("off")) {
                 brightnessSeekbar.setVisibility(View.GONE);
+                brightnessTextView.setVisibility(View.GONE);
             } else if (type.equals("rainbow")) {
                 brightnessSeekbar.setVisibility(View.VISIBLE);
+                brightnessTextView.setVisibility(View.VISIBLE);
             }
         } else if (type.equals("color") || type.equals("blink")) {
             colorView.setVisibility(View.VISIBLE);
-            colorTextView.setVisibility(View.VISIBLE);
             brightnessSeekbar.setVisibility(View.VISIBLE);
+            brightnessTextView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -177,6 +177,7 @@ public class LedActivity extends AppCompatActivity implements AdapterView.OnItem
     @Override
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
         brightness = (float) i / 100;
+        brightnessTextView.setText(getString(R.string.brightness) + i);
     }
 
     @Override
