@@ -24,7 +24,7 @@ class TypeResource(ModelResource):
     class Meta:
         queryset = Type.objects.all()
         resource_name = 'types'
-        allowed_methods = ['get', 'post', 'put', 'delete']
+        allowed_methods = ['get']
         # authentication = OAuth20Authentication()
         authentication = BasicAuthentication()
         authorization = Authorization()
@@ -68,7 +68,7 @@ class DayResource(ModelResource):
     class Meta:
         queryset = Day.objects.all()
         resource_name = 'days'
-        allowed_methods = ['get', 'post', 'put', 'delete']
+        allowed_methods = ['get']
         authentication = BasicAuthentication()
         authorization = Authorization()
         serializer = Serializer(formats=['json', 'jsonp'])

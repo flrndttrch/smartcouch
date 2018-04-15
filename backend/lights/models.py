@@ -42,6 +42,6 @@ class Timer(models.Model):
     lighting = models.ForeignKey(Lighting)
     days = models.ManyToManyField(Day)
     star_time = models.TimeField('start time')
-    end_time = models.DateTimeField('end time')
+    end_time = models.TimeField('end time')
 
 
