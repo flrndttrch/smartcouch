@@ -6,7 +6,7 @@ import java.math.BigInteger;
 
 public class User {
     @SerializedName("id")
-    private int id;
+    private Integer id;
     @SerializedName("first_name")
     private String firstName;
     @SerializedName("last_name")
@@ -28,7 +28,7 @@ public class User {
     @SerializedName("last_login")
     private String lastLogin;
 
-    public User(int id, String firstName, String lastName, String username, String dateJoined,
+    public User(Integer id, String firstName, String lastName, String username, String dateJoined,
                 boolean isActive, boolean isStaff, String lastLogin) {
 //    public User(int id, String firstName, String lastName, String username, String password,
 // String dateJoined,
@@ -47,11 +47,11 @@ public class User {
         this.lastLogin = lastLogin;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

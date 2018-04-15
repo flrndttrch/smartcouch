@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Lighting {
     @SerializedName("id")
-    private int id;
+    private Integer id;
     @SerializedName("active")
     private boolean active;
     @SerializedName("brightness")
@@ -36,13 +36,14 @@ public class Lighting {
         this.description = description;
         this.type = type;
         this.user = user;
+        this.active = true;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
