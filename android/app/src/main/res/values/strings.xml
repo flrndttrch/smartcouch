@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Smartcouch</string>
+    <string name="app_name">Smart Couch</string>
 
     <!-- Strings related to login -->
     <string name="prompt_account">Username</string>
@@ -23,8 +23,4 @@
     <string name="brightness">Brightness: \u0020</string>
     <string name="color">Color:\u0020</string>
     <string name="type">Type:\u0020</string>
-
-    <string name="title_activity_load">LoadActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
