@@ -14,7 +14,6 @@
         android:layout_height="wrap_content"
         android:text="@string/type"
         android:textSize="18dp"
-        android:layout_marginLeft="10dp"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <Spinner
@@ -45,9 +44,10 @@
         android:id="@+id/brightnessTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
         android:text="@string/brightness"
         android:textSize="18dp"
-        android:layout_marginLeft="10dp"
+
         android:progress="100"
         app:layout_constraintTop_toTopOf="@+id/color"
         app:layout_constraintStart_toEndOf="@+id/color" />
@@ -69,6 +69,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/submit"
+        android:background="@color/colorPrimary"
+        android:textColor="#FFFFFF"
+        android:textSize="18dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

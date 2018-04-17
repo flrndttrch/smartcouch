@@ -47,16 +47,25 @@ public class LedActivity extends AppCompatActivity implements AdapterView.OnItem
 
     private int[] color = {255, 255, 255};
     private float brightness = 1.0f;
-    private SharedPreferences settings;
     private android.app.AlertDialog alertDialog;
     private DjangoService djangoService;
     private User user;
     private List<Type> types;
+    private String username;
+    private String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_led);
+        Bundle extras = getIntent().getExtras();
+        if (extras.getString("username") != null) {
+            username = extras.getString("username");
+        }
+        if (extras.getString("password") != null) {
+            password = extras.getString("password");
+        }
+
         brightnessTextView = findViewById(R.id.brightnessTextView);
         brightnessTextView.setText(getString(R.string.brightness) + brightness * 100);
         colorView = findViewById(R.id.color);
@@ -81,10 +90,8 @@ public class LedActivity extends AppCompatActivity implements AdapterView.OnItem
         submit = findViewById(R.id.submit);
         submit.setOnClickListener(this);
 
-        settings = getSharedPreferences("UserInfo", 0);
         djangoService =
-                ServiceGenerator.createService(DjangoService.class, settings.getString("Username", "").toString(),
-                        settings.getString("Password", "").toString());
+                ServiceGenerator.createService(DjangoService.class, username, password);
         djangoService.listTypes().enqueue(new Callback<TypeResponse>() {
             @Override
             public void onResponse(Call<TypeResponse> call, Response<TypeResponse> response) {
@@ -104,7 +111,7 @@ public class LedActivity extends AppCompatActivity implements AdapterView.OnItem
                 Log.e(TAG, throwable.toString());
             }
         });
-        djangoService.getUserByUsername(settings.getString("username", "")).enqueue(new Callback<UserResponse>() {
+        djangoService.getUserByUsername(username).enqueue(new Callback<UserResponse>() {
             @Override
             public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
                 List<User> results = response.body().getResults();
