@@ -61,7 +61,7 @@ def lighting_added(sender, instance, **kwargs):
     global blink
     if lighting_type.name.lower() in ['color', 'blink']:
         global color
-        move_out()
+        # move_out()
         color = init_color(instance)
         if color is None:
             return
@@ -79,7 +79,7 @@ def lighting_added(sender, instance, **kwargs):
             rainbow_cycle()
             rainbow_colors()
         elif lighting_type.name.lower() == 'off':
-            move_out()
+            # move_out()
             pixels.clear()
             pixels.show()
 
@@ -171,14 +171,14 @@ def brightness_decrease(wait_time=0.1, step=1):
 
 def glow_color():
     pixels.clear()
-    move_in()
-    # pixels.set_pixels_rgb(color[0], color[1], color[2])
-    # pixels.show()
+    # move_in()
+    pixels.set_pixels_rgb(Adafruit_WS2801.RGB_to_color(*color))
+    pixels.show()
 
 
 def blink_color(wait_time=0.25):
     pixels.clear()
-    move_in()
+    # move_in()
     while blink:
         time.sleep(wait_time)
         pixels.clear()
