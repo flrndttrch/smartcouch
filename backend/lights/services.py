@@ -172,7 +172,7 @@ def brightness_decrease(wait_time=0.1, step=1):
 def glow_color():
     pixels.clear()
     # move_in()
-    pixels.set_pixels_rgb(Adafruit_WS2801.RGB_to_color(*color))
+    pixels.set_pixels(Adafruit_WS2801.RGB_to_color(*color))
     pixels.show()
 
 
