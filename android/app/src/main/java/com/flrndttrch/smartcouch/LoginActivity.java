@@ -69,8 +69,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    private Editor editor;
-    private SharedPreferences settings;
     private List<User> users;
 
     @Override
@@ -80,9 +78,6 @@ public class LoginActivity extends AppCompatActivity {
         // Set up the login form.
         mAccountView = (AutoCompleteTextView) findViewById(R.id.account);
 //        populateAutoComplete();
-
-        settings = getSharedPreferences("UserInfo", 0);
-        editor = settings.edit();
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -106,13 +101,6 @@ public class LoginActivity extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-
-        String username = settings.getString("Username", "").toString();
-        String password = settings.getString("Password", "").toString();
-        DjangoService djangoService =
-                ServiceGenerator.createService(DjangoService.class, username, password);
-        Call<UserResponse> call = djangoService.listUsers();
-        call.enqueue(userCallback);
     }
 
     private Callback<UserResponse> userCallback = new Callback<UserResponse>() {
@@ -120,9 +108,11 @@ public class LoginActivity extends AppCompatActivity {
         public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
             users = response.body().getResults();
             //TODO: Actually authenticate user.
-            Intent toLed = new Intent(LoginActivity.this, LedActivity.class);
-            startActivity(toLed);
-            finish();
+//            Intent toMain = new Intent(LoginActivity.this, MainActivity.class);
+//            toLed.putExtra("username", username);
+//            toLed.putExtra("password", password);
+//            startActivity(toMain);
+//            finish();
 
             Log.d(TAG, "Number of user received: " + users.size());
         }
@@ -133,50 +123,6 @@ public class LoginActivity extends AppCompatActivity {
             Log.e(TAG, throwable.toString());
         }
     };
-
-//    private void populateAutoComplete() {
-//        if (!mayRequestContacts()) {
-//            return;
-//        }
-//
-//        getLoaderManager().initLoader(0, null, this);
-//    }
-
-//    private boolean mayRequestContacts() {
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-//            return true;
-//        }
-//        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-//            return true;
-//        }
-//        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-//            Snackbar.make(mAccountView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-//                    .setAction(android.R.string.ok, new View.OnClickListener() {
-//                        @Override
-//                        @TargetApi(Build.VERSION_CODES.M)
-//                        public void onClick(View v) {
-//                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-//                        }
-//                    });
-//        } else {
-//            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-//        }
-//        return false;
-//    }
-
-//    /**
-//     * Callback received when a permissions request has been completed.
-//     */
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-//                                           @NonNull int[] grantResults) {
-//        if (requestCode == REQUEST_READ_CONTACTS) {
-//            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                populateAutoComplete();
-//            }
-//        }
-//    }
-
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -277,50 +223,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-//        return new CursorLoader(this,
-//                // Retrieve data rows for the device user's 'profile' contact.
-//                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-//                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-//
-//                // Select only email addresses.
-//                ContactsContract.Contacts.Data.MIMETYPE +
-//                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-//                .CONTENT_ITEM_TYPE},
-//
-//                // Show primary email addresses first. Note that there won't be
-//                // a primary email address if the user hasn't specified one.
-//                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-//    }
-//
-//    @Override
-//    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-//        List<String> emails = new ArrayList<>();
-//        cursor.moveToFirst();
-//        while (!cursor.isAfterLast()) {
-//            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-//            cursor.moveToNext();
-//        }
-//
-//        addEmailsToAutoComplete(emails);
-//    }
-
-//    @Override
-//    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-//
-//    }
-
-//    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-//        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-//        ArrayAdapter<String> adapter =
-//                new ArrayAdapter<>(LoginActivity.this,
-//                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-//
-//        mAccountView.setAdapter(adapter);
-//    }
-
-
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -364,12 +266,10 @@ public class LoginActivity extends AppCompatActivity {
 
             if (success) {
                 //Move to Main Activity or overwrite finish method?
-                editor.putString("Username", mAccount.toString());
-                editor.putString("Password", mPassword.toString());
-                editor.commit();
-
-                Intent toLed = new Intent(LoginActivity.this, LedActivity.class);
-                startActivity(toLed);
+                Intent toMain = new Intent(LoginActivity.this, MainActivity.class);
+                toMain.putExtra("username", mAccount.toString());
+                toMain.putExtra("password", mPassword.toString());
+                startActivity(toMain);
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
